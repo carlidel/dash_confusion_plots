@@ -59,6 +59,14 @@ block = dbc.Col([
     dbc.Row([
         dbc.Col([
             dcc.Graph(
+                id="fig_advanced_confusion",
+                figure=go.Figure()
+            )
+        ])
+    ]),
+    dbc.Row([
+        dbc.Col([
+            dcc.Graph(
                 id="fig_data",
                 figure=go.Figure()
             )
@@ -323,232 +331,55 @@ app.layout = html.Div([
 ##### CALLBACKS ################################################################
 #### Options update ####
 
-# 0
 @app.callback(
-    Output({'type': 'dropdown_0', 'index': MATCH}, 'options'),
+    [
+        Output({'type': 'dropdown_0', 'index': MATCH}, 'options'),
+        Output({'type': 'dropdown_0', 'index': MATCH}, 'value'),
+        Output({'type': 'label_0', 'index': MATCH}, 'children'),
+        Output({'type': 'dropdown_1', 'index': MATCH}, 'options'),
+        Output({'type': 'dropdown_1', 'index': MATCH}, 'value'),
+        Output({'type': 'label_1', 'index': MATCH}, 'children'),
+        Output({'type': 'dropdown_2', 'index': MATCH}, 'options'),
+        Output({'type': 'dropdown_2', 'index': MATCH}, 'value'),
+        Output({'type': 'label_2', 'index': MATCH}, 'children'),
+        Output({'type': 'dropdown_3', 'index': MATCH}, 'options'),
+        Output({'type': 'dropdown_3', 'index': MATCH}, 'value'),
+        Output({'type': 'label_3', 'index': MATCH}, 'children'),
+        Output({'type': 'dropdown_4', 'index': MATCH}, 'options'),
+        Output({'type': 'dropdown_4', 'index': MATCH}, 'value'),
+        Output({'type': 'label_4', 'index': MATCH}, 'children'),
+        Output({'type': 'dropdown_5', 'index': MATCH}, 'options'),
+        Output({'type': 'dropdown_5', 'index': MATCH}, 'value'),
+        Output({'type': 'label_5', 'index': MATCH}, 'children'),
+    ],
     Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
 )
-def update_dropdown_0(value):
+def update_dropdown_and_labels(value):
     value = handler_list[value]
-    if len(value.get_param_list()) == 0:
-        return []
+    outputs = []
+    
+    for i in range(len(value.get_param_list())):
+        outputs.append(
+            [{'label': str(s), 'value': s} for s in 
+                value.get_param_options(value.get_param_list()[i])]
+        )
+        outputs.append(outputs[-1][0]['value'])
+        outputs.append(value.get_param_list()[i])
+    
+    for i in range(len(value.get_param_list()), 6):
+        outputs.append([])
+        outputs.append(None)
+        outputs.append("parameter_{}".format(i))
 
-    option_list = value.get_param_options(value.get_param_list()[0])
-    return [{'label': str(s), 'value': s} for s in option_list]
-
-
-@app.callback(
-    Output({'type': 'dropdown_0', 'index': MATCH}, 'value'),
-    Input({'type': 'dropdown_0', 'index': MATCH}, 'options')
-)
-def update_default_dropdown_value_0(value):
-    if len(value) == 0:
-        raise PreventUpdate
-    else:
-        return value[0]['value']
-
-
-@app.callback(
-    Output({'type': 'label_0', 'index': MATCH}, 'children'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_label_0(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) == 0:
-        return "parameter_0"
-
-    return value.get_param_list()[0]
-
-
-# 1
-@app.callback(
-    Output({'type': 'dropdown_1', 'index': MATCH}, 'options'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_dropdown_1(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 1:
-        return []
-
-    option_list = value.get_param_options(value.get_param_list()[1])
-    return [{'label': str(s), 'value': s} for s in option_list]
-
-
-@app.callback(
-    Output({'type': 'dropdown_1', 'index': MATCH}, 'value'),
-    Input({'type': 'dropdown_1', 'index': MATCH}, 'options')
-)
-def update_default_dropdown_value_1(value):
-    if len(value) == 0:
-        raise PreventUpdate
-    else:
-        return value[0]['value']
-
-
-@app.callback(
-    Output({'type': 'label_1', 'index': MATCH}, 'children'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_label_1(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 1:
-        return "parameter_1"
-
-    return value.get_param_list()[1]
-
-
-# 2
-@app.callback(
-    Output({'type': 'dropdown_2', 'index': MATCH}, 'options'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_dropdown_2(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 2:
-        return []
-
-    option_list = value.get_param_options(value.get_param_list()[2])
-    return [{'label': str(s), 'value': s} for s in option_list]
-
-
-@app.callback(
-    Output({'type': 'dropdown_2', 'index': MATCH}, 'value'),
-    Input({'type': 'dropdown_2', 'index': MATCH}, 'options')
-)
-def update_default_dropdown_value_2(value):
-    if len(value) == 0:
-        raise PreventUpdate
-    else:
-        return value[0]['value']
-
-
-@app.callback(
-    Output({'type': 'label_2', 'index': MATCH}, 'children'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_label_2(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 2:
-        return "parameter_2"
-
-    return value.get_param_list()[2]
-
-
-# 3
-@app.callback(
-    Output({'type': 'dropdown_3', 'index': MATCH}, 'options'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_dropdown_3(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 3:
-        return []
-
-    option_list = value.get_param_options(value.get_param_list()[3])
-    return [{'label': str(s), 'value': s} for s in option_list]
-
-
-@app.callback(
-    Output({'type': 'dropdown_3', 'index': MATCH}, 'value'),
-    Input({'type': 'dropdown_3', 'index': MATCH}, 'options')
-)
-def update_default_dropdown_value_3(value):
-    if len(value) == 0:
-        raise PreventUpdate
-    else:
-        return value[0]['value']
-
-
-@app.callback(
-    Output({'type': 'label_3', 'index': MATCH}, 'children'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_label_3(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 3:
-        return "parameter_3"
-
-    return value.get_param_list()[3]
-
-
-# 4
-@app.callback(
-    Output({'type': 'dropdown_4', 'index': MATCH}, 'options'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_dropdown_4(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 4:
-        return []
-
-    option_list = value.get_param_options(value.get_param_list()[4])
-    return [{'label': str(s), 'value': s} for s in option_list]
-
-
-@app.callback(
-    Output({'type': 'dropdown_4', 'index': MATCH}, 'value'),
-    Input({'type': 'dropdown_4', 'index': MATCH}, 'options')
-)
-def update_default_dropdown_value_4(value):
-    if len(value) == 0:
-        raise PreventUpdate
-    else:
-        return value[0]['value']
-
-
-@app.callback(
-    Output({'type': 'label_4', 'index': MATCH}, 'children'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_label_4(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 4:
-        return "parameter_4"
-
-    return value.get_param_list()[4]
-
-
-# 5
-@app.callback(
-    Output({'type': 'dropdown_5', 'index': MATCH}, 'options'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_dropdown_5(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 5:
-        return []
-
-    option_list = value.get_param_options(value.get_param_list()[5])
-    return [{'label': str(s), 'value': s} for s in option_list]
-
-
-@app.callback(
-    Output({'type': 'dropdown_5', 'index': MATCH}, 'value'),
-    Input({'type': 'dropdown_5', 'index': MATCH}, 'options')
-)
-def update_default_dropdown_value_5(value):
-    if len(value) == 0:
-        raise PreventUpdate
-    else:
-        return value[0]['value']
-
-
-@app.callback(
-    Output({'type': 'label_5', 'index': MATCH}, 'children'),
-    Input({'type': 'main_dropdown', 'index': MATCH}, 'value')
-)
-def update_label_5(value):
-    value = handler_list[value]
-    if len(value.get_param_list()) <= 5:
-        return "parameter_5"
-
-    return value.get_param_list()[5]
-
+    return outputs
 
 #### Grab data and create figures ####
 
 @app.callback(
-    Output('fig_main_confusion', 'figure'),
+    [
+        Output('fig_main_confusion', 'figure'),
+        Output('fig_advanced_confusion', 'figure')
+    ],
     [
         Input({'type': 'dropdown_0', 'index': 0}, 'value'),     # 0
         Input({'type': 'dropdown_1', 'index': 0}, 'value'),     # 1
@@ -604,7 +435,7 @@ def update_confusion_plot(*args):
     fig.add_trace(
         go.Scatter(
             x=samples,
-            y=tp / (500*500),
+            y=tp,
             name="True Positive",
             mode='lines',
             marker_color="red"
@@ -612,7 +443,7 @@ def update_confusion_plot(*args):
     fig.add_trace(
         go.Scatter(
             x=samples,
-            y=tn / (500*500),
+            y=tn,
             name="True Negative",
             mode='lines',
             marker_color="orange"
@@ -620,7 +451,7 @@ def update_confusion_plot(*args):
     fig.add_trace(
         go.Scatter(
             x=samples,
-            y=fp / (500*500),
+            y=fp,
             name="False Positive",
             mode='lines',
             marker_color="blue"
@@ -628,21 +459,11 @@ def update_confusion_plot(*args):
     fig.add_trace(
         go.Scatter(
             x=samples,
-            y=fn / (500*500),
+            y=fn,
             name="False Negative",
             mode='lines',
             marker_color="cyan"
         ))
-
-    fig.add_trace(
-        go.Scatter(
-            x=samples,
-            y=(tp + tn) / (tp + tn + fn + fp),
-            name="Accuracy",
-            mode="lines",
-            marker_color="grey"
-        )
-    )
 
     max_accuracy = np.nanargmax((tp + tn) / (tp + tn + fn + fp))
     fig.add_vline(samples[max_accuracy])
@@ -653,7 +474,65 @@ def update_confusion_plot(*args):
         yaxis_title="Samples"
     )
 
-    return fig
+    fig_adv = go.Figure()
+    fig_adv.add_trace(
+        go.Scatter(
+            x=samples,
+            y=(tp+tn)/(tp+tn+fp+fn),
+            name="Accuracy",
+            mode='lines'
+        )
+    )
+    fig_adv.add_trace(
+        go.Scatter(
+            x=samples,
+            y=tp/(tp+fp),
+            name="Precision",
+            mode="lines"
+        )
+    )
+    fig_adv.add_trace(
+        go.Scatter(
+            x=samples,
+            y=tp/(tp+fn),
+            name="Sensitivity",
+            mode="lines"
+        )
+    )
+    fig_adv.add_trace(
+        go.Scatter(
+            x=samples,
+            y=tn/(tn+fp),
+            name="Specificity",
+            mode='lines'
+        )
+    )
+
+    fig_adv.update_layout(
+        xaxis_title="Threshold position",
+        yaxis_title="Value"
+    )
+
+    fig.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    fig_adv.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    fig.update_layout(hovermode="x")
+    fig_adv.update_layout(hovermode="x")
+
+    return [fig, fig_adv]
+
+
 
 #### Toast ####
 
